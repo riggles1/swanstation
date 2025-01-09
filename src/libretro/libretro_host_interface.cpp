@@ -16,6 +16,7 @@
 #include "core/negcon_rumble.h"
 #include "core/pad.h"
 #include "core/playstation_mouse.h"
+#include "core/playstation_mouse_ball.h"
 #include "core/system.h"
 #include "libretro_audio_stream.h"
 #include "libretro_game_settings.h"
@@ -199,6 +200,7 @@ LibretroHostInterface g_libretro_host_interface;
 #define RETRO_DEVICE_PS_NEGCON_RUMBLE RETRO_DEVICE_SUBCLASS(RETRO_DEVICE_ANALOG, 3)
 #define RETRO_DEVICE_PS_GUNCON RETRO_DEVICE_SUBCLASS(RETRO_DEVICE_LIGHTGUN, 0)
 #define RETRO_DEVICE_PS_MOUSE RETRO_DEVICE_SUBCLASS(RETRO_DEVICE_MOUSE, 0)
+#define RETRO_DEVICE_PS_MOUSE_BALL RETRO_DEVICE_SUBCLASS(RETRO_DEVICE_ANALOG, 0)
 
 retro_environment_t g_retro_environment_callback;
 retro_video_refresh_t g_retro_video_refresh_callback;
@@ -261,7 +263,8 @@ void LibretroHostInterface::retro_set_environment()
       { "NeGcon", RETRO_DEVICE_PS_NEGCON },
       { "NeGcon Rumble", RETRO_DEVICE_PS_NEGCON_RUMBLE },
       { "Namco GunCon", RETRO_DEVICE_PS_GUNCON },
-      { "PlayStation Mouse", RETRO_DEVICE_PS_MOUSE },
+      { "PlayStation Mouse (Full)", RETRO_DEVICE_PS_MOUSE },
+      { "PlayStation Mouse (Ball Only)", RETRO_DEVICE_PS_MOUSE_BALL},
       { NULL, 0 },
   };
 
@@ -272,6 +275,7 @@ void LibretroHostInterface::retro_set_environment()
       { "NeGcon", RETRO_DEVICE_PS_NEGCON },
       { "NeGcon Rumble", RETRO_DEVICE_PS_NEGCON_RUMBLE },
       { "PlayStation Mouse", RETRO_DEVICE_PS_MOUSE },
+      { "PlayStation Mouse (Ball Only)", RETRO_DEVICE_PS_MOUSE_BALL},
       { NULL, 0 },
   };
 
@@ -280,6 +284,7 @@ void LibretroHostInterface::retro_set_environment()
       { "Analog Controller (DualShock)", RETRO_DEVICE_PS_DUALSHOCK },
       { "Analog Joystick", RETRO_DEVICE_PS_ANALOG_JOYSTICK },
       { "PlayStation Mouse", RETRO_DEVICE_PS_MOUSE },
+      { "PlayStation Mouse (Ball Only)", RETRO_DEVICE_PS_MOUSE_BALL},
       { NULL, 0 },
   };
 
@@ -1115,6 +1120,10 @@ void LibretroHostInterface::LoadSettings()
       case RETRO_DEVICE_PS_MOUSE:
         g_settings.controller_types[i] = ControllerType::PlayStationMouse;
         break;
+		
+      case RETRO_DEVICE_PS_MOUSE_BALL:
+        g_settings.controller_types[i] = ControllerType::PlayStationMouseBall;
+        break;
 
       case RETRO_DEVICE_NONE:
       default:
@@ -1250,6 +1259,10 @@ void LibretroHostInterface::UpdateControllers()
 
       case ControllerType::PlayStationMouse:
         UpdateControllersPlayStationMouse(i);
+        break;
+
+      case ControllerType::PlayStationMouseBall:
+        UpdateControllersPlayStationMouseBall(i);
         break;
 
       default:
@@ -1651,6 +1664,30 @@ void LibretroHostInterface::UpdateControllersPlayStationMouse(u32 index)
   static constexpr std::array<std::pair<PlayStationMouse::Button, u32>, 2> button_mapping = {
     {{PlayStationMouse::Button::Left, RETRO_DEVICE_ID_MOUSE_LEFT},
      {PlayStationMouse::Button::Right, RETRO_DEVICE_ID_MOUSE_RIGHT}}};
+
+  for (const auto& it : button_mapping)
+  {
+    const int16_t state = g_retro_input_state_callback(index, RETRO_DEVICE_MOUSE, 0, it.second);
+    controller->SetButtonState(it.first, state != 0);
+  }
+
+  const int16_t mouse_x = g_retro_input_state_callback(index, RETRO_DEVICE_MOUSE, 0, RETRO_DEVICE_ID_MOUSE_X);
+  const int16_t mouse_y = g_retro_input_state_callback(index, RETRO_DEVICE_MOUSE, 0, RETRO_DEVICE_ID_MOUSE_Y);
+  const s32 pos_x = (m_display->GetMousePositionX() + mouse_x);
+  const s32 pos_y = (m_display->GetMousePositionY() + mouse_y);
+
+  m_display->SetMousePosition(pos_x, pos_y);
+
+}
+
+
+void LibretroHostInterface::UpdateControllersPlayStationMouseBall(u32 index)
+{
+  PlayStationMouseBall* controller = static_cast<PlayStationMouseBall*>(System::GetController(index));
+
+  static constexpr std::array<std::pair<PlayStationMouse::Button, u32>, 2> button_mapping = {
+    {{PlayStationMouseBall::Button::Left, RETRO_DEVICE_ID_JOYPAD_A},
+     {PlayStationMouseBall::Button::Right, RETRO_DEVICE_ID_JOYPAD_B}}};
 
   for (const auto& it : button_mapping)
   {
