@@ -12,19 +12,19 @@ PlayStationMouse::PlayStationMouse()
   m_last_host_position_y = g_host_interface->GetDisplay()->GetMousePositionY();
 }
 
-PlayStationMouse::~PlayStationMouse() = default;
+PlayStationMouseBall::~PlayStationMouseBall() = default;
 
-ControllerType PlayStationMouse::GetType() const
+ControllerType PlayStationMouseBall::GetType() const
 {
-  return ControllerType::PlayStationMouse;
+  return ControllerType::PlayStationMouseBall;
 }
 
-void PlayStationMouse::Reset()
+void PlayStationMouseBall::Reset()
 {
   m_transfer_state = TransferState::Idle;
 }
 
-bool PlayStationMouse::DoState(StateWrapper& sw, bool apply_input_state)
+bool PlayStationMouseBall::DoState(StateWrapper& sw, bool apply_input_state)
 {
   if (!Controller::DoState(sw, apply_input_state))
     return false;
@@ -46,7 +46,7 @@ bool PlayStationMouse::DoState(StateWrapper& sw, bool apply_input_state)
   return true;
 }
 
-void PlayStationMouse::SetButtonState(Button button, bool pressed)
+void PlayStationMouseBall::SetButtonState(Button button, bool pressed)
 {
   static constexpr std::array<u8, static_cast<size_t>(Button::Count)> indices = {{11, 10}};
   if (pressed)
@@ -55,7 +55,7 @@ void PlayStationMouse::SetButtonState(Button button, bool pressed)
     m_button_state |= u16(1) << indices[static_cast<u8>(button)];
 }
 
-void PlayStationMouse::SetButtonState(s32 button_code, bool pressed)
+void PlayStationMouseBall::SetButtonState(s32 button_code, bool pressed)
 {
   if (button_code < 0 || button_code >= static_cast<s32>(Button::Count))
     return;
@@ -63,12 +63,12 @@ void PlayStationMouse::SetButtonState(s32 button_code, bool pressed)
   SetButtonState(static_cast<Button>(button_code), pressed);
 }
 
-void PlayStationMouse::ResetTransferState()
+void PlayStationMouseBall::ResetTransferState()
 {
   m_transfer_state = TransferState::Idle;
 }
 
-bool PlayStationMouse::Transfer(const u8 data_in, u8* data_out)
+bool PlayStationMouseBall::Transfer(const u8 data_in, u8* data_out)
 {
   static constexpr u16 ID = 0x5A12;
 
@@ -142,7 +142,7 @@ bool PlayStationMouse::Transfer(const u8 data_in, u8* data_out)
   return false;
 }
 
-void PlayStationMouse::UpdatePosition()
+void PlayStationMousBalle::UpdatePosition()
 {
   // get screen coordinates
   const HostDisplay* display = g_host_interface->GetDisplay();
@@ -157,12 +157,12 @@ void PlayStationMouse::UpdatePosition()
   m_delta_y = static_cast<s8>(std::clamp<s32>(delta_y, std::numeric_limits<s8>::min(), std::numeric_limits<s8>::max()));
 }
 
-std::unique_ptr<PlayStationMouse> PlayStationMouse::Create()
+std::unique_ptr<PlayStationMouseBall> PlayStationMouseBall::Create()
 {
-  return std::make_unique<PlayStationMouse>();
+  return std::make_unique<PlayStationMouseBall>();
 }
 
-u32 PlayStationMouse::StaticGetVibrationMotorCount()
+u32 PlayStationMouseBall::StaticGetVibrationMotorCount()
 {
   return 0;
 }
