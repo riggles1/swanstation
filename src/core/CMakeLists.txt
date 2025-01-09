@@ -77,6 +77,8 @@ add_library(core
     pgxp.h
     playstation_mouse.cpp
     playstation_mouse.h
+    playstation_mouse_ball.cpp
+    playstation_mouse_ball.h
     psf_loader.cpp
     psf_loader.h
     resources.cpp
