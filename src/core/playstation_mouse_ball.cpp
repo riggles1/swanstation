@@ -1,4 +1,4 @@
-#include "playstation_mouse.h"
+#include "playstation_mouse_ball.h"
 #include "common/state_wrapper.h"
 #include "gpu.h"
 #include "host_display.h"
