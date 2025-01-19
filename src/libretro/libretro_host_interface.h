@@ -97,6 +97,7 @@ private:
   void UpdateControllersNeGconRumble(u32 index);
   void UpdateControllersNamcoGunCon(u32 index);
   void UpdateControllersPlayStationMouse(u32 index);
+  void UpdateControllersPlayStationMouseBall(u32 index);
   void GetSystemAVInfo(struct retro_system_av_info* info, bool use_resolution_scale);
   void UpdateGeometry();
   void UpdateLogging();
