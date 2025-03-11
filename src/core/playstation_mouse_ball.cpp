@@ -6,7 +6,7 @@
 #include "system.h"
 #include <array>
 
-PlayStationMouse::PlayStationMouse()
+PlayStationMouseBall::PlayStationMouseBall()
 {
   m_last_host_position_x = g_host_interface->GetDisplay()->GetMousePositionX();
   m_last_host_position_y = g_host_interface->GetDisplay()->GetMousePositionY();
@@ -142,7 +142,7 @@ bool PlayStationMouseBall::Transfer(const u8 data_in, u8* data_out)
   return false;
 }
 
-void PlayStationMousBalle::UpdatePosition()
+void PlayStationMouseBall::UpdatePosition()
 {
   // get screen coordinates
   const HostDisplay* display = g_host_interface->GetDisplay();

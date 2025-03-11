@@ -200,7 +200,7 @@ LibretroHostInterface g_libretro_host_interface;
 #define RETRO_DEVICE_PS_NEGCON_RUMBLE RETRO_DEVICE_SUBCLASS(RETRO_DEVICE_ANALOG, 3)
 #define RETRO_DEVICE_PS_GUNCON RETRO_DEVICE_SUBCLASS(RETRO_DEVICE_LIGHTGUN, 0)
 #define RETRO_DEVICE_PS_MOUSE RETRO_DEVICE_SUBCLASS(RETRO_DEVICE_MOUSE, 0)
-#define RETRO_DEVICE_PS_MOUSE_BALL RETRO_DEVICE_SUBCLASS(RETRO_DEVICE_ANALOG, 0)
+#define RETRO_DEVICE_PS_MOUSE_BALL RETRO_DEVICE_SUBCLASS(RETRO_DEVICE_ANALOG, 4)
 
 retro_environment_t g_retro_environment_callback;
 retro_video_refresh_t g_retro_video_refresh_callback;
@@ -1685,7 +1685,7 @@ void LibretroHostInterface::UpdateControllersPlayStationMouseBall(u32 index)
 {
   PlayStationMouseBall* controller = static_cast<PlayStationMouseBall*>(System::GetController(index));
 
-  static constexpr std::array<std::pair<PlayStationMouse::Button, u32>, 2> button_mapping = {
+  static constexpr std::array<std::pair<PlayStationMouseBall::Button, u32>, 2> button_mapping = {
     {{PlayStationMouseBall::Button::Left, RETRO_DEVICE_ID_JOYPAD_A},
      {PlayStationMouseBall::Button::Right, RETRO_DEVICE_ID_JOYPAD_B}}};
 
