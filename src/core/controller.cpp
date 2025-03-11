@@ -113,7 +113,7 @@ u32 Controller::GetVibrationMotorCount(ControllerType type)
       return PlayStationMouse::StaticGetVibrationMotorCount();
 
     case ControllerType::PlayStationMouseBall:
-      return PlayStationMouse::StaticGetVibrationMotorCount();
+      return PlayStationMouseBall::StaticGetVibrationMotorCount();
 
     case ControllerType::NeGcon:
       return NeGcon::StaticGetVibrationMotorCount();
